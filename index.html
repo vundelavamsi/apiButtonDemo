@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="buttonsContainer"></div>
+
+
+    <button id="nextButton" style="display: none;">Next Page</button>
+
+    <script>
+        const apiUrl = 'https://pokeapi.co/api/v2/ability/?limit=20&offset=0';
+        let nextUrl = apiUrl;
+
+        document.getElementById('nextButton').addEventListener('click', () => {
+            fetchData();
+            document.getElementById('nextButton').style.display = 'none';
+        });
+
+        function fetchData() {
+            fetch(nextUrl)
+                .then(response => response.json())
+                .then(data => {
+                    displayData(data.results);
+                    nextUrl = data.next;
+                    console.log(nextUrl);
+                    if (nextUrl) {
+                        document.getElementById('nextButton').style.display = 'block';
+                    } else {
+                        document.getElementById('nextButton').style.display = 'none';
+                    }
+                })
+                .catch(error => console.error('Error fetching abilities:', error));
+        }
+
+        function displayData(abilities) {
+            const buttonsContainer = document.getElementById('buttonsContainer');
+
+            abilities.forEach(ability => {
+                const button = document.createElement('button');
+                button.textContent = ability.name;
+                button.addEventListener('click', () => {
+                    button.style.display = 'none';
+                });
+                buttonsContainer.appendChild(button);
+            });
+        }
+
+        fetchData();
+    </script>
+</body>
+</html>
